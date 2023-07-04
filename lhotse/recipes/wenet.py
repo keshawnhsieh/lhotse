@@ -43,13 +43,10 @@ from lhotse.recipes.utils import manifests_exist, read_manifests_if_cached
 from lhotse.utils import Pathlike, resumable_download, safe_extract
 
 wenet = (
-    "dev-clean",
-    "dev-other",
-    "test-clean",
-    "test-other",
-    "train-clean-100",
-    "train-clean-360",
-    "train-other-500",
+    "dev",
+    "test_meeting",
+    "test_net",
+    "train_m"
 )
 
 
@@ -190,12 +187,12 @@ def prepare_wenet(
             )
         }
 
+
     for part in tqdm(dataset_parts, desc="Preparing wenet parts"):
         if manifests_exist(part=part, output_dir=output_dir, prefix="wenet"):
             logging.info(f"wenet subset: {part} already prepared - skipping.")
             continue
-        part_path = corpus_dir
-        # part_path = corpus_dir / part
+        part_path = corpus_dir / part
 
         print(part_path)
         # We are ignoring weird files such as ._84_121550_000007_000000.wav
