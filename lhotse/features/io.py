@@ -397,7 +397,7 @@ def close_cached_file_handles() -> None:
 
 def hash_key(key):
     #notice to set PYTHONHASHSEED = 0
-    return hash(key)
+    return key.__hash__()
     #h = 0
     #for c in key:
     #    h = (31 * h + ord(c)) & 0xFFFFFFFF
