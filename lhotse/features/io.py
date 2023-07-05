@@ -396,7 +396,10 @@ def close_cached_file_handles() -> None:
     lookup_reader_cache_or_open.cache_clear()
 
 def hash_key(key):
-    return int(hashlib.sha256(key.encode('utf-8')).hexdigest(),16) % 10
+    h = 0
+    for c in s:
+        h = (31 * h + ord(c)) & 0xFFFFFFFF
+    return ((h + 0x80000000) & 0xFFFFFFFF) - 0x80000000
 
 @register_reader
 class NumpyHdf5Reader(FeaturesReader):
