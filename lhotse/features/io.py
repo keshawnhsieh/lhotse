@@ -397,7 +397,7 @@ def close_cached_file_handles() -> None:
 
 def hash_key(key):
     h = 0
-    for c in s:
+    for c in key:
         h = (31 * h + ord(c)) & 0xFFFFFFFF
     return ((h + 0x80000000) & 0xFFFFFFFF) - 0x80000000
 
