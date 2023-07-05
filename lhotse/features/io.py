@@ -421,10 +421,10 @@ class NumpyHdf5Reader(FeaturesReader):
         # (pzelasko): If I understand HDF5/h5py correctly, this implementation reads only
         # the requested slice of the array into memory - but don't take my word for it.
 
-        group_key = str(key.__hash__ % 10)
-        if not self.hd5.__contains__(group_key):
-            self.hd5.create_group(group_key)
-        group = self.h5[group_key]
+        group_key = str(key.__hash__() % 10)
+        if not self.hdf.__contains__(group_key):
+            self.hdf.create_group(group_key)
+        group = self.hdf[group_key]
         group.create_dataset(key, data=value)
 
         return group.hdf[key][left_offset_frames:right_offset_frames]
@@ -466,10 +466,10 @@ class NumpyHdf5Writer(FeaturesWriter):
 
     def write(self, key: str, value: np.ndarray) -> str:
         # hash to group
-        group_key = str(key.__hash__ % 10)
-        if not self.hd5.__contains__(group_key):
-            self.hd5.create_group(group_key)
-        group = self.h5[group_key]
+        group_key = str(key.__hash__() % 10)
+        if not self.hdf.__contains__(group_key):
+            self.hdf.create_group(group_key)
+        group = self.hdf[group_key]
         group.create_dataset(key, data=value)
         return key
 
