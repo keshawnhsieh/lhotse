@@ -12,7 +12,7 @@ import numpy as np
 from lhotse.array import Array, TemporalArray
 from lhotse.caching import dynamic_lru_cache
 from lhotse.utils import Pathlike, Seconds, SmartOpen, is_module_available, pairwise
-
+import hashlib
 
 class FeaturesWriter(metaclass=ABCMeta):
     """
@@ -395,6 +395,8 @@ def close_cached_file_handles() -> None:
     lookup_chunk_size.cache_clear()
     lookup_reader_cache_or_open.cache_clear()
 
+def hash_key(key):
+    return int(hashlib.sha256(key.encode('utf-8')).hexdigest(),16) % 10
 
 @register_reader
 class NumpyHdf5Reader(FeaturesReader):
@@ -411,6 +413,7 @@ class NumpyHdf5Reader(FeaturesReader):
         super().__init__()
         self.hdf = lookup_cache_or_open(storage_path)
 
+
     @dynamic_lru_cache
     def read(
         self,
@@ -421,13 +424,10 @@ class NumpyHdf5Reader(FeaturesReader):
         # (pzelasko): If I understand HDF5/h5py correctly, this implementation reads only
         # the requested slice of the array into memory - but don't take my word for it.
 
-        group_key = str(key.__hash__() % 10)
-        if not self.hdf.__contains__(group_key):
-            self.hdf.create_group(group_key)
+        group_key = str(hash_key(key))
         group = self.hdf[group_key]
-        group.create_dataset(key, data=value)
 
-        return group.hdf[key][left_offset_frames:right_offset_frames]
+        return group[key][left_offset_frames:right_offset_frames]
 
 
 @register_writer
@@ -466,7 +466,7 @@ class NumpyHdf5Writer(FeaturesWriter):
 
     def write(self, key: str, value: np.ndarray) -> str:
         # hash to group
-        group_key = str(key.__hash__() % 10)
+        group_key = str(hash_key(key))
         if not self.hdf.__contains__(group_key):
             self.hdf.create_group(group_key)
         group = self.hdf[group_key]
