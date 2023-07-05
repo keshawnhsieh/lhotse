@@ -396,10 +396,12 @@ def close_cached_file_handles() -> None:
     lookup_reader_cache_or_open.cache_clear()
 
 def hash_key(key):
-    h = 0
-    for c in key:
-        h = (31 * h + ord(c)) & 0xFFFFFFFF
-    return ((h + 0x80000000) & 0xFFFFFFFF) - 0x80000000
+    #notice to set PYTHONHASHSEED = 0
+    return hash(key)
+    #h = 0
+    #for c in key:
+    #    h = (31 * h + ord(c)) & 0xFFFFFFFF
+    #return ((h + 0x80000000) & 0xFFFFFFFF) - 0x80000000
 
 @register_reader
 class NumpyHdf5Reader(FeaturesReader):
@@ -427,7 +429,7 @@ class NumpyHdf5Reader(FeaturesReader):
         # (pzelasko): If I understand HDF5/h5py correctly, this implementation reads only
         # the requested slice of the array into memory - but don't take my word for it.
 
-        group_key = str(hash_key(key))
+        group_key = str(hash_key(key)%10)
         group = self.hdf[group_key]
 
         return group[key][left_offset_frames:right_offset_frames]
@@ -469,7 +471,7 @@ class NumpyHdf5Writer(FeaturesWriter):
 
     def write(self, key: str, value: np.ndarray) -> str:
         # hash to group
-        group_key = str(hash_key(key))
+        group_key = str(hash_key(key)%10)
         if not self.hdf.__contains__(group_key):
             self.hdf.create_group(group_key)
         group = self.hdf[group_key]
