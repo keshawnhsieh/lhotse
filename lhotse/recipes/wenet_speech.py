@@ -38,7 +38,7 @@ def prepare_wenet_speech(
     corpus_dir: Pathlike,
     dataset_parts: Union[str, Sequence[str]] = "all",
     output_dir: Optional[Pathlike] = None,
-    num_jobs: int = 1,
+    num_jobs: int = 32,
 ) -> Dict[str, Dict[str, Union[RecordingSet, SupervisionSet]]]:
     """
     Returns the manifests which consist of the Recordings and Supervisions
