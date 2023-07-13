@@ -35,6 +35,45 @@ from lhotse.utils import Pathlike, add_durations
 WETNET_SPEECH_PARTS = ("L", "DEV", "TEST_NET", "TEST_MEETING")
 
 
+def parse_utterance(
+    audio: Any, root_path: Path, subsets: Sequence
+) -> Tuple[Recording, Dict[str, List[SupervisionSegment]]]:
+    sampling_rate = 16000
+    recording = Recording(
+        id=audio["aid"],
+        sources=[
+            AudioSource(
+                type="file",
+                channels=[0],
+                source=str(root_path / audio["path"]),
+            )
+        ],
+        num_samples=compute_num_samples(
+            duration=audio["duration"], sampling_rate=sampling_rate
+        ),
+        sampling_rate=sampling_rate,
+        duration=audio["duration"],
+    )
+    segments = defaultdict(dict)
+    for sub in subsets:
+        segments[sub] = []
+    for seg in audio["segments"]:
+        segment = SupervisionSegment(
+            id=seg["sid"],
+            recording_id=audio["aid"],
+            start=seg["begin_time"],
+            duration=add_durations(
+                seg["end_time"], -seg["begin_time"], sampling_rate=sampling_rate
+            ),
+            language="Chinese",
+            text=seg["text"].strip(),
+        )
+        for sub in seg["subsets"]:
+            if sub in subsets:
+                segments[sub].append(segment)
+    return recording, segments
+
+
 def prepare_wenet_speech(
     corpus_dir: Pathlike,
     dataset_parts: Union[str, Sequence[str]] = "all",
@@ -69,7 +108,7 @@ def prepare_wenet_speech(
     assert raw_manifests_path.is_file(), f"No such file : {raw_manifests_path}"
     logging.info(f"Loading raw manifests from : {raw_manifests_path}")
     raw_manifests = json.load(open(raw_manifests_path, "r", encoding="utf8"))
-    print("Loaded")
+    logging.info("Loaded")
 
     with ProcessPoolExecutor(num_jobs) as ex:
         for recording, segments in tqdm(
@@ -108,40 +147,3 @@ def prepare_wenet_speech(
     return manifests
 
 
-def parse_utterance(
-    audio: Any, root_path: Path, subsets: Sequence
-) -> Tuple[Recording, Dict[str, List[SupervisionSegment]]]:
-    sampling_rate = 16000
-    recording = Recording(
-        id=audio["aid"],
-        sources=[
-            AudioSource(
-                type="file",
-                channels=[0],
-                source=str(root_path / audio["path"]),
-            )
-        ],
-        num_samples=compute_num_samples(
-            duration=audio["duration"], sampling_rate=sampling_rate
-        ),
-        sampling_rate=sampling_rate,
-        duration=audio["duration"],
-    )
-    segments = defaultdict(dict)
-    for sub in subsets:
-        segments[sub] = []
-    for seg in audio["segments"]:
-        segment = SupervisionSegment(
-            id=seg["sid"],
-            recording_id=audio["aid"],
-            start=seg["begin_time"],
-            duration=add_durations(
-                seg["end_time"], -seg["begin_time"], sampling_rate=sampling_rate
-            ),
-            language="Chinese",
-            text=seg["text"].strip(),
-        )
-        for sub in seg["subsets"]:
-            if sub in subsets:
-                segments[sub].append(segment)
-    return recording, segments
