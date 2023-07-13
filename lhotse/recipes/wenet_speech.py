@@ -31,7 +31,8 @@ from lhotse.audio import AudioSource, Recording, RecordingSet
 from lhotse.supervision import SupervisionSegment, SupervisionSet
 from lhotse.utils import Pathlike, add_durations
 
-WETNET_SPEECH_PARTS = ("L", "M", "S", "DEV", "TEST_NET", "TEST_MEETING")
+# WETNET_SPEECH_PARTS = ("L", "M", "S", "DEV", "TEST_NET", "TEST_MEETING")
+WETNET_SPEECH_PARTS = ("L", "DEV", "TEST_NET", "TEST_MEETING")
 
 
 def prepare_wenet_speech(
@@ -68,6 +69,7 @@ def prepare_wenet_speech(
     assert raw_manifests_path.is_file(), f"No such file : {raw_manifests_path}"
     logging.info(f"Loading raw manifests from : {raw_manifests_path}")
     raw_manifests = json.load(open(raw_manifests_path, "r", encoding="utf8"))
+    print("Loaded")
 
     with ProcessPoolExecutor(num_jobs) as ex:
         for recording, segments in tqdm(
