@@ -113,7 +113,7 @@ def prepare_aishell(
         recordings = []
         supervisions = []
         wav_path = corpus_dir / "data_aishell" / "wav" / f"{part}"
-        for audio_path in wav_path.rglob("**/*.wav"):
+        for audio_path in tqdm(wav_path.rglob("**/*.wav")):
             idx = audio_path.stem
             speaker = audio_path.parts[-2]
             if idx not in transcript_dict:
