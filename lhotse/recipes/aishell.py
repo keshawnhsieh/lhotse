@@ -113,7 +113,7 @@ def prepare_aishell(
         recordings = []
         supervisions = []
         wav_path = corpus_dir / "data_aishell" / "wav" / f"{part}"
-        for audio_path in tqdm(wav_path.rglob("**/*.wav")):
+        for i, audio_path in tqdm(enumerate(wav_path.rglob("**/*.wav"), 1)):
             idx = audio_path.stem
             speaker = audio_path.parts[-2]
             if idx not in transcript_dict:
@@ -137,6 +137,15 @@ def prepare_aishell(
                 text=text.strip(),
             )
             supervisions.append(segment)
+
+            if i % 1_000_000 == 0:
+                recording_set = RecordingSet.from_recordings(recordings)
+                supervision_set = SupervisionSet.from_segments(supervisions)
+                validate_recordings_and_supervisions(recording_set, supervision_set)
+                supervision_set.to_file(
+                    output_dir / f"aishell_supervisions_{part}_{i}.jsonl.gz"
+                )
+                recording_set.to_file(output_dir / f"aishell_recordings_{part}_{i}.jsonl.gz")
 
         recording_set = RecordingSet.from_recordings(recordings)
         supervision_set = SupervisionSet.from_segments(supervisions)
