@@ -113,8 +113,16 @@ def prepare_aishell(
         recordings = []
         supervisions = []
         wav_path = corpus_dir / "data_aishell" / "wav" / f"{part}"
+        done_id  = set([])
+        if part == "train":
+            # load cached manifests
+            recordings = list(RecordingSet.from_file("data/manifests/aishell_recordings_train_9000000.jsonl.gz"))
+            supervisions = list(SupervisionSet.from_file("data/manifests/aishell_supervisions_train_9000000.jsonl.gz"))
+            done_id = set([r.id for r in recordings])
         for i, audio_path in tqdm(enumerate(wav_path.rglob("**/*.wav"), 1)):
             idx = audio_path.stem
+            if idx in done_id:
+                continue
             speaker = audio_path.parts[-2]
             if idx not in transcript_dict:
                 logging.warning(f"No transcript: {idx}")
