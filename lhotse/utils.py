@@ -907,26 +907,18 @@ def streaming_shuffle(
     :param rng: either random module or random.Random instance
     :return: a generator of cuts, shuffled on-the-fly.
     """
-    if rng is None:
-        rng = random
     buf = []
-    startup = True
     for sample in data:
-        if len(buf) < bufsize:
-            try:
-                buf.append(next(data))
-            except StopIteration:
-                pass
-        if len(buf) > 0:
-            k = rng.randint(0, len(buf) - 1)
-            sample, buf[k] = buf[k], sample
-        if startup and len(buf) < bufsize:
-            buf.append(sample)
-            continue
-        startup = False
-        yield sample
-    for sample in buf:
-        yield sample
+        buf.append(sample)
+        if len(buf) >= bufsize:
+            random.shuffle(buf)
+            for x in buf:
+                yield x
+            buf = []
+    # The sample left over
+    random.shuffle(buf)
+    for x in buf:
+        yield x
 
 
 def pairwise(iterable):
