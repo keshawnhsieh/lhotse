@@ -115,7 +115,7 @@ def prepare_aishell_tar(
         supervisions = []
 
         tar_path = corpus_dir / f"{part}"
-        for tar in tqdm(sorted(tar_path.rglob("*.tar"))):
+        for tar in tqdm(sorted(tar_path.rglob("*.tar"))[:1]):
             ftar = open(tar, 'rb')
             stream = tarfile.open(fileobj=ftar, mode="r|*")
             prev_prefix = None
