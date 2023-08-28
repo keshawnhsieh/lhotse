@@ -71,3 +71,4 @@ from .wenet import *
 from .wenet_speech import *
 from .xbmu_amdo31 import *
 from .yesno import *
+from .aishell_tar import *
