@@ -254,7 +254,18 @@ class AudioSource:
                 "Inconsistent state: found an AudioSource with Lhotse Shar placeholder "
                 "that was not filled during deserialization."
             )
-
+        elif self.type == "tar":
+            ftar = open(source, "rb")
+            stream = tarfile.open(fileobj=ftar, mode="r|*")
+            for i, tarinfo in enumerate(stream):
+                if i == self.tar_idx:
+                    with stream.extractfile(tarinfo) as file_obj:
+                        samples, sample_rate = read_audio(
+                            BytesIO(file_obj), offset=offset, duration=duration
+                        )
+                    break
+            stream.close()
+            ftar.close()
         else:  # self.type == 'file'
             samples, sampling_rate = read_audio(
                 source,
