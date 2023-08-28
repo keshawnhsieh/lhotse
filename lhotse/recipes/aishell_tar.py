@@ -115,7 +115,7 @@ def prepare_aishell_tar(
         supervisions = []
 
         tar_path = corpus_dir / f"{part}"
-        for tar in tqdm(tar_path.rglob("*.tar")):
+        for tar in tqdm(sorted(tar_path.rglob("*.tar"))):
             ftar = open(tar, 'rb')
             stream = tarfile.open(fileobj=ftar, mode="r|*")
             prev_prefix = None
@@ -158,6 +158,8 @@ def prepare_aishell_tar(
 
                 prev_prefix = prefix
             if prev_prefix is not None:
+                recording = example["recording"]
+                segment = example["segment"]
                 recordings.append(recording)
                 supervisions.append(segment)
             stream.close()
