@@ -262,7 +262,7 @@ class AudioSource:
                 if i == self.tar_idx:
                     with stream.extractfile(tarinfo) as file_obj:
                         samples, sample_rate = read_audio(
-                            BytesIO(file_obj), offset=offset, duration=duration
+                            BytesIO(file_obj.read()), offset=offset, duration=duration
                         )
                     break
             stream.close()
