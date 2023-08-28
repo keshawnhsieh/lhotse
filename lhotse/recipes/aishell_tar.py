@@ -152,7 +152,7 @@ def prepare_aishell_tar(
                             text=text.strip(),
                         )
                     elif postfix in AUDIO_FORMAT_SETS:
-                        example["recording"] = Recording.from_tar(file_obj.read(), recording_id=prefix, tar_path=tar, tar_idx=i)
+                        example["recording"] = Recording.from_tar(file_obj.read(), recording_id=prefix, tar_path=str(tar), tar_idx=i)
                     else:
                         example[postfix] = file_obj.read()
 
