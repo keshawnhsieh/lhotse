@@ -129,6 +129,8 @@ def prepare_aishell_tar(
                 if prev_prefix is not None and prefix != prev_prefix:
                     example['key'] = prev_prefix
                     if valid:
+                        recording = example["recording"]
+                        segment = example["segment"]
                         recordings.append(recording)
                         supervisions.append(segment)
                     example = {}
