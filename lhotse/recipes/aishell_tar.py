@@ -121,7 +121,7 @@ def prepare_aishell_tar(
             prev_prefix = None
             example = {}
             valid = True
-            for tarinfo in stream:
+            for i, tarinfo in enumerate(stream):
                 name = tarinfo.name
                 pos = name.rfind('.')
                 assert pos > 0
@@ -152,7 +152,7 @@ def prepare_aishell_tar(
                             text=text.strip(),
                         )
                     elif postfix in AUDIO_FORMAT_SETS:
-                        example["recording"] = Recording.from_bytes(file_obj.read(), recording_id=prefix)
+                        example["recording"] = Recording.from_tar(file_obj.read(), recording_id=prefix, tar_path=tar, tar_idx=i)
                     else:
                         example[postfix] = file_obj.read()
 

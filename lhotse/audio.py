@@ -174,6 +174,7 @@ class AudioSource:
     type: str
     channels: List[int]
     source: Union[str, bytes]
+    tar_idx: int
 
     def load_audio(
         self,
@@ -442,6 +443,30 @@ class Recording:
                         if relative_path_depth is not None and relative_path_depth > 0
                         else str(path)
                     ),
+                )
+            ],
+        )
+
+    @staticmethod
+    def from_tar(
+        data: bytes,
+        recording_id: str,
+        tar_path: str,
+        tar_idx: int,
+    ) -> "Recording":
+        stream = BytesIO(data)
+        audio_info = torchaudio_info(stream)
+        return Recording(
+            id=recording_id,
+            sampling_rate=audio_info.samplerate,
+            num_samples=audio_info.frames,
+            duration=audio_info.duration,
+            sources=[
+                AudioSource(
+                    type="tar",
+                    channels=list(range(audio_info.channels)),
+                    source=tar_path,
+                    tar_idx=tar_idx,
                 )
             ],
         )
