@@ -294,6 +294,7 @@ class AudioSource:
         return (
             f"AudioSource(type='{self.type}', channels={self.channels}, "
             f"source='{self.source if isinstance(self.source, str) else '<binary-data>'}')"
+            f"tar_idx='{self.tar_idx if self.tar_idx else 'None'}'"
         )
 
 
