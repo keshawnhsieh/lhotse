@@ -17,6 +17,6 @@ def aishell_tar(corpus_dir: Pathlike, output_dir: Pathlike):
 
 @download.command(context_settings=dict(show_default=True))
 @click.argument("target_dir", type=click.Path())
-def aishell(target_dir: Pathlike):
+def aishell_tar(target_dir: Pathlike):
     """Aishell download."""
     download_aishell(target_dir)
