@@ -15,6 +15,7 @@ from io import BytesIO, IOBase
 from itertools import islice
 from math import ceil, isclose, sqrt
 from pathlib import Path
+import tarfile
 from subprocess import PIPE, CalledProcessError, run
 from typing import (
     Any,
