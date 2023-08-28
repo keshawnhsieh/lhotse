@@ -10,7 +10,7 @@ __all__ = ["aishell_tar"]
 @prepare.command(context_settings=dict(show_default=True))
 @click.argument("corpus_dir", type=click.Path(exists=True, dir_okay=True))
 @click.argument("output_dir", type=click.Path())
-def aishell(corpus_dir: Pathlike, output_dir: Pathlike):
+def aishell_tar(corpus_dir: Pathlike, output_dir: Pathlike):
     """Aishell ASR data preparation."""
     prepare_aishell(corpus_dir, output_dir=output_dir)
 
