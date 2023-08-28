@@ -194,7 +194,7 @@ class AudioSource:
         :param force_opus_sampling_rate: This parameter is only used when we detect an OPUS file.
             It will tell ffmpeg to resample OPUS to this sampling rate.
         """
-        assert self.type in ("file", "command", "url", "memory", "shar")
+        assert self.type in ("file", "command", "url", "memory", "shar", "tar")
 
         # TODO: refactor when another source type is added
         source = self.source
