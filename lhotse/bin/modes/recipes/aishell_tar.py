@@ -12,5 +12,5 @@ __all__ = ["aishell_tar"]
 @click.argument("output_dir", type=click.Path())
 def aishell_tar(corpus_dir: Pathlike, output_dir: Pathlike):
     """Aishell ASR data preparation."""
-    prepare_aishell(corpus_dir, output_dir=output_dir)
+    prepare_aishell_tar(corpus_dir, output_dir=output_dir)
 
