@@ -268,11 +268,11 @@ def prepare_aishell_tar_mp(
 
         tar_path = corpus_dir / f"{part}"
         all_tars = sorted(tar_path.rglob("*.tar"))[:2]
-        # with Pool() as pool:
-        #     result = list(tqdm(pool.imap(helper, all_tars), total=len(all_tars)))
-        result = []
-        for tar in tqdm(all_tars):
-            result.append(helper(tar))
+        with Pool() as pool:
+            result = list(tqdm(pool.imap(helper, all_tars), total=len(all_tars)))
+        # result = []
+        # for tar in tqdm(all_tars):
+        #     result.append(helper(tar))
         recordings = []
         supervisions = []
         for r in result:
