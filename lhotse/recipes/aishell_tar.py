@@ -267,7 +267,7 @@ def prepare_aishell_tar_mp(
 
 
         tar_path = corpus_dir / f"{part}"
-        all_tars = sorted(tar_path.rglob("*.tar"))[:1312]
+        all_tars = sorted(tar_path.rglob("*.tar"))
         with Pool() as pool:
             result = list(tqdm(pool.imap(helper, all_tars), total=len(all_tars)))
         # result = []
