@@ -273,8 +273,10 @@ def prepare_aishell_tar_mp(
         result = []
         for tar in tqdm(all_tars):
             result.append(helper(tar))
-        recordings = [r[0] for r in result]
-        supervisions = [r[1] for r in result]
+        for r in result:
+            recordings.extend(r[0])
+            supervisions.extend(r[1])
+
 
         recording_set = RecordingSet.from_recordings(recordings)
         supervision_set = SupervisionSet.from_segments(supervisions)
