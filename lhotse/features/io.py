@@ -462,7 +462,7 @@ class NumpyHdf5Writer(FeaturesWriter):
         check_h5py_installed()
         import h5py
 
-        self.storage_path_ = Path(storage_path).with_suffix(".h5")
+        self.storage_path_ = Path(storage_path).with_suffix(Path(storage_path).suffix + ".h5")
         self.hdf = h5py.File(self.storage_path, mode=mode)
 
     @property
