@@ -257,7 +257,8 @@ def prepare_aishell_tar_mp(
     #         content = text_normalize(content)
     #         transcript_dict[idx_transcript[0]] = content
     manifests = defaultdict(dict)
-    dataset_parts = ["train_l"]#, "dev", "test"]
+    # dataset_parts = ["train_l"]#, "dev", "test"]
+    dataset_parts = ["train_l", "dev", "test_net"]
     for part in tqdm(
         dataset_parts,
         desc="Process aishell audio, it takes about 102 seconds.",
