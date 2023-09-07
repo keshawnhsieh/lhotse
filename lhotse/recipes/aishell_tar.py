@@ -207,20 +207,43 @@ def helper(tar):
 
             if postfix == 'txt':
                 text = file_obj.read().decode('utf8').strip()
-                recording = example["recording"]
-                example["segment"] = SupervisionSegment(
-                    id=prefix,
-                    recording_id=prefix,
-                    start=0.0,
-                    duration=recording.duration,
-                    channel=0,
-                    language="Chinese",
-                    speaker="_".join(prefix.split("_")[:-1]),
-                    text=text.strip(),
-                )
+                if "recording" in example:
+                    recording = example["recording"]
+                    example["segment"] = SupervisionSegment(
+                        id=prefix,
+                        recording_id=prefix,
+                        start=0.0,
+                        duration=recording.duration,
+                        channel=0,
+                        language="Chinese",
+                        speaker="_".join(prefix.split("_")[:-1]),
+                        text=text.strip(),
+                    )
+                else:
+                    example["segment"] = SupervisionSegment(
+                        id=prefix,
+                        recording_id=prefix,
+                        start=0.0,
+                        duration=0,
+                        channel=0,
+                        language="Chinese",
+                        speaker="_".join(prefix.split("_")[:-1]),
+                        text=text.strip(),
+                    )
             elif postfix in AUDIO_FORMAT_SETS:
                 example["recording"] = Recording.from_tar(file_obj.read(), recording_id=prefix, tar_path=str(tar),
                                                           tar_idx=i)
+                if "segment" in example:
+                    example["segment"] = SupervisionSegment(
+                        id=prefix,
+                        recording_id=prefix,
+                        start=0.0,
+                        duration=example["recording"].duration,
+                        channel=0,
+                        language="Chinese",
+                        speaker="_".join(prefix.split("_")[:-1]),
+                        text=text.strip(),
+                    )
             else:
                 example[postfix] = file_obj.read()
 
