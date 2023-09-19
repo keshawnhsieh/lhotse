@@ -6,6 +6,7 @@ publicly available on https://www.openslr.org/33
 
 import logging
 import os
+import re
 import shutil
 import tarfile
 from collections import defaultdict
