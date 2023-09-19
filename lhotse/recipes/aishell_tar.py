@@ -196,10 +196,12 @@ def helper(tar):
         if prev_prefix is not None and prefix != prev_prefix:
             example['key'] = prev_prefix
             if valid:
-                recording = example["recording"]
-                segment = example["segment"]
-                recordings.append(recording)
-                supervisions.append(segment)
+                text= example["segment"].text
+                if len(re.sub("[\u4e00-\u9fa5]+", "", text)) == 0:
+                    recording = example["recording"]
+                    segment = example["segment"]
+                    recordings.append(recording)
+                    supervisions.append(segment)
             example = {}
             valid = True
 
@@ -249,10 +251,12 @@ def helper(tar):
 
         prev_prefix = prefix
     if prev_prefix is not None:
-        recording = example["recording"]
-        segment = example["segment"]
-        recordings.append(recording)
-        supervisions.append(segment)
+        text = example["segment"].text
+        if len(re.sub("[\u4e00-\u9fa5]+", "", text)) == 0:
+            recording = example["recording"]
+            segment = example["segment"]
+            recordings.append(recording)
+            supervisions.append(segment)
     stream.close()
     ftar.close()
     return recordings, supervisions
